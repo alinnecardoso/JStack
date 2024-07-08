@@ -4,6 +4,8 @@ const { URL } = require('url');
 
 const routes = require('./routes');
 
+const bodyParser = require('./helpers/bodyParser')
+
 //Criação do Servidor
 const server = http.createServer((request, response) =>{ //function(request, response){}
   // parse() -> takes a URL string, parses it, and returns a URL object
@@ -37,10 +39,13 @@ const server = http.createServer((request, response) =>{ //function(request, res
 
     response.send = (statusCode, body) => {
       response.writeHead(statusCode, { 'Content-Type': 'text/html' });
-      response.end(JSON.stringify(body))
+      response.end(JSON.stringify(body))//Transforma o Array e Objetos em String no formato JSON
     };
-
-    route.handler(request, response);
+    if(['POST', 'PUT', 'PATCH'].includes(request.method)){
+      bodyParser(request, () =>route.handler(request, response));
+    }else{
+      route.handler(request, response);
+    }
   }else{
     response.writeHead(404, { 'Content-Type': 'text/html' }); //O tipo de conteúdo do body é text/html
     //Como faz para enviar o html

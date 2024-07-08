@@ -11,10 +11,7 @@ module.exports  = {
       }
       return a.id > b.id ? 1: -1;
     })
-
-    response.writeHead(200, { 'Content-Type' : 'application/json' }); //O tipo de conteúdo do body é application/json
-    //Como faz para enviar o html
-    response.end(JSON.stringify(sortedUsers)); //Transforma o Array e Objetos em String no formato JSON
+    response.send(200, sortedUsers);
   },
 
   getUserById(request, response){
@@ -23,42 +20,25 @@ module.exports  = {
     const user = users.find( (user) => user.id === Number(id) );
 
     if(!user){
-      response.writeHead(400, { 'Content-Type' : 'application/json' }); 
-
-      response.end(JSON.stringify({error : 'User not found'}));
-    }else{
-      response.writeHead(200, { 'Content-Type' : 'application/json' }); 
-
-      response.end(JSON.stringify(user));
+      return response.send(400, {error : 'User not found'} )
     }
+    response.send(200, user);
   },
   createUser(request, response){
-    let body =  '';
+    const { body } = request;
 
-    // Esse eventListener escuta toda vez que a msg chega e junta todas as strings e depois faz um parse para JSON
-    // Quando chegar a informação, recebe a informação na variavel chunck
-    request.on('data', (chunk) =>{
-      body += chunk; //Isso é uma string
-    });
+    const lastUserId = users[users.length - 1].id;
 
-    // Existe um outro eventListener que indica quando acabou
-    // Ou seja, quando chegar o último pedaço da mensagem
-    request.on('end', () => {
-      body = JSON.parse(body); //Tem que converter a string para JSON
+    const newUser = {
+      id : lastUserId + 1,
+      name : body.name,
+    };
 
-      const lastUserId = users[users.length - 1].id;
+    // Joga dentro do array na memória
+    users.push(newUser);
 
-      const newUser = {
-        id : lastUserId + 1,
-        name : body.name,
-      };
+    response.writeHead(200, { 'Content-Type' : 'application/json' }); 
 
-      // Joga dentro do array na memória
-      users.push(newUser);
-
-      response.writeHead(200, { 'Content-Type' : 'application/json' }); 
-
-      response.end(JSON.stringify(newUser));
-    });
+    response.end(JSON.stringify(newUser));
   }
 };

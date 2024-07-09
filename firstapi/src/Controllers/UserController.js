@@ -1,4 +1,4 @@
-const users = require('../mocks/users');
+let users = require('../mocks/users');
 
 module.exports  = {
   listUsers(request, response){
@@ -40,5 +40,22 @@ module.exports  = {
     response.writeHead(200, { 'Content-Type' : 'application/json' }); 
 
     response.end(JSON.stringify(newUser));
+  },
+  updateUser(request, response){
+    let { id } = request.params;
+    const { name } = request.body;
+
+    id = Number(id);
+
+    // Pesquisar dentro do array de usuarios se existe um usuário com esse id
+    // Pesquisa o usuario que tenha o id
+    const userExists = users.find((users)=> users.id === id);
+
+    if(!userExists){
+      response.send(400, { error : 'User not found' })
+    }
+
+    // Se achar o usuário
+    
   }
 };

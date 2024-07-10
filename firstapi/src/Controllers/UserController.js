@@ -52,10 +52,29 @@ module.exports  = {
     const userExists = users.find((users)=> users.id === id);
 
     if(!userExists){
-      response.send(400, { error : 'User not found' })
+      return response.send(400, { error : 'User not found' })
     }
 
     // Se achar o usuário
-    
+    users = users.map((user)=>{
+      // Se o user.id que stou iterando no moemnto for igual ao id que estou tentando editar
+      if(user.id === id){
+        return {
+          ...user, //Clonar as informações do usuário atual
+          name,//Vai sobreescrever o name shortsintaxe name: name
+        }
+      }
+
+      // Se não for esse id ele continua o processamento normal
+      return user;
+    })
+
+    response.send(200, { id : name });
+  },
+
+  deleteUser(request, response){
+    let { id } = request.params;
+
+    id = Number(id);
   }
 };

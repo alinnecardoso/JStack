@@ -76,5 +76,10 @@ module.exports  = {
     let { id } = request.params;
 
     id = Number(id);
+    
+    //Remover todos os usuário que tenham o id igual ao que eu to recebendo
+    users = users.filter((user) => user.id === id);
+
+    response.send(200, { deleted : true });
   }
 };

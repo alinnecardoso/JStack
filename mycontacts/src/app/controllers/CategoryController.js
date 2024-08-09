@@ -4,8 +4,8 @@ class CategoryController {
   async index(request, response){
     //Listar todos os registros
     const categories = await CategoriesRepository.findAll();
-
     response.json(categories);
+
   }
 
   //Criar um novo registro

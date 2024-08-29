@@ -7,6 +7,8 @@ export default function Header({onToggleTheme, selectedTheme}) {
     <Container>
       <h1>JStack's Blog</h1>
       <button type="button" onClick={onToggleTheme} >🌞</button>
+
+      {selectedTheme === 'dark' ? '🌞' :  '🌚'}
     </Container>
   );
 }

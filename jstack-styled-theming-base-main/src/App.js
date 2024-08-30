@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 
 import GlobalStyle from './styles/global';
 import Layout from './components/Layout';
@@ -15,6 +15,12 @@ const currentTheme = useMemo(() => {
 function handleToggleTheme(){
   setTheme(prevState => prevState === 'dark' ? 'light' : 'dark');
 }
+
+//Função de Efeito
+//É executada toda vez que o componente for renderizado
+useEffect(() => {
+  console.debug('useEffect executou')
+}, []);
 
 function App() {
   return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import {useTheme} from 'styled-components'
 import Header from '../Header';
@@ -7,6 +7,10 @@ import Footer from '../Footer';
 
 export default function Layout({ onToggleTheme, selectedTheme }) {
   const theme = useTheme();
+
+  useEffect(() =>{
+    console.debug('<Layout /> saiu da tela.')
+  },[selectedTheme])
   return (
     <>
       <Header onToggleTheme={onToggleTheme} selectedTheme={selectedTheme} />

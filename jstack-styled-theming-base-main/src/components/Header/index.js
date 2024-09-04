@@ -8,9 +8,10 @@ export default class Header extends React.Component {
     return (
       <Container>
         <h1>JStack's Blog</h1>
-        <button type="button" onClick={onToggleTheme} >🌞</button>
+        <button type="button" onClick={onToggleTheme} >
   
-        {selectedTheme === 'dark' ? '🌞' :  '🌚'}
+          {selectedTheme === 'dark' ? '🌞' :  '🌚'}
+        </button>
       </Container>
     );
   }

@@ -7,13 +7,22 @@ import { ThemeProvider } from 'styled-components';
 import themes from './styles/themes'
 
 export default class App extends React.Component {
+  constructor(props){
+    super(props);
+
+    this.state = {
+      theme: 'dark',
+    }
+  }
   render(){
-    const { handleToggleTheme, theme } = this.props;
+    const { theme } = this.state;
     return (
       <ThemeProvider theme={themes[theme] || themes.dark} >
         <GlobalStyle />
         <Layout 
-        onToggleTheme={handleToggleTheme}
+        onToggleTheme={() => {
+          this.setState({theme: this.state.theme === 'dark' ? 'light' : 'dark'})
+        }}
         selectedTheme={theme}
         />
       </ ThemeProvider>

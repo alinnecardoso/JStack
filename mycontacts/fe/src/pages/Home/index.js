@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import { Container, Header, ListContainer, Card, InputSearchContainer } from "./styles";
 
 import arrow from '../../assets/images/icons/arrow.svg'
@@ -14,7 +15,7 @@ export default function Home() {
 
       <Header>
         <strong>3 Contatos</strong>
-        <a href="/">Novo Contato</a>
+        <Link to="/new">Novo Contato</Link>
       </Header>
 
       <ListContainer>
@@ -36,51 +37,9 @@ export default function Home() {
           </div>
 
           <div className="actions">
-            <a href="/">
+            <Link to="/edit/123">
               <img src={edit} alt="edit" />
-            </a>
-
-            <button type="button">
-              <img src={trash} alt="trash" />
-            </button>
-          </div>
-        </Card>
-
-        <Card>
-          <div className="info">
-            <div className="contact-name">
-              <strong>Matheus Silva</strong>
-              <small>Instagram</small>
-            </div>
-            <span>matheus2devacademy.com.br</span>
-            <span>(41) 99999-9999</span>
-          </div>
-
-          <div className="actions">
-            <a href="/">
-              <img src={edit} alt="edit" />
-            </a>
-
-            <button type="button">
-              <img src={trash} alt="trash" />
-            </button>
-          </div>
-        </Card>
-
-        <Card>
-          <div className="info">
-            <div className="contact-name">
-              <strong>Matheus Silva</strong>
-              <small>Instagram</small>
-            </div>
-            <span>matheus2devacademy.com.br</span>
-            <span>(41) 99999-9999</span>
-          </div>
-
-          <div className="actions">
-            <a href="/">
-              <img src={edit} alt="edit" />
-            </a>
+            </Link>
 
             <button type="button">
               <img src={trash} alt="trash" />

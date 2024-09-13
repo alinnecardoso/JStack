@@ -5,6 +5,7 @@ import Input from "../Input";
 import Select from "../Select";
 import { Form, ButtonContainer } from "./styles";
 import PropTypes from 'prop-types'
+import isEmailValid from "../../utils/isEmailValid";
 
 export default function ContactForm({ buttonLabel }){
   const [name, setName] = useState('');
@@ -23,7 +24,27 @@ export default function ContactForm({ buttonLabel }){
       ])
     }else{
       setErrors((prevState) => prevState.filter(
-        (error) => error.field !== 'name' 
+        (error) => error.field !== 'name'
+      ))
+    }
+  }
+
+  function handleEmailChange(event){
+    setEmail(event.target.value);
+
+    if(event.target.value && !isEmailValid(event.target.value)){
+      const errorAlreadyExists = errors.find((error) => error.field === 'email');
+
+      if(errorAlreadyExists){
+        return;
+      }
+      setErrors((prevState) => [
+        ...prevState,
+        { field: 'email', message: 'Email inválido.'}
+      ])
+    }else{
+      setErrors((prevState) => prevState.filter(
+        (error) => error.field !== 'email'
       ))
     }
   }
@@ -55,7 +76,7 @@ export default function ContactForm({ buttonLabel }){
         <Input
           placeholder="E-mail"
           value={email}
-          onChange={(event)=> setEmail(event.target.value)}
+          onChange={handleEmailChange}
         />
       </FormGroup>
 

@@ -53,3 +53,30 @@ export default function Home() {
     </Container>
   );
 }
+
+fetch("http://localhost:3001/contacts", {
+  method: 'DELETE',
+  headers: new Headers({
+    'X-App-ID':'123',
+  }),
+})
+    .then((response) => {
+      console.log('response', response)
+
+      response.headers.forEach((header) => console.log(header))
+    })
+    .catch((error) => {
+      console.error('error', error)
+      })
+
+// SOP  -> Same Origin Policy -> Política de mesma origem
+// CORS -> Cross-Origin Resource Sharing -> Compartilhamento de recursos entre origens cruzadas/diferente
+// Origem: protocolo://dominio:porta
+
+// Saída:   http://localhost:3000
+// Entrada: http://localhost:3001
+
+
+// Toda vez que fere a politica de mesma origem (SOP), essa request é automaticamente passa a ser uma request do tipo CORS
+
+// Preflight -> Pré-Voô -> Requisação que acontece antes da requisição 'DELETE' (Exemplo) -> Método http dessa requisição preflight é OPTIONS -> Serve para verificar com o Backend quais são os métodos http e os headers que ele está permitindo serem executados

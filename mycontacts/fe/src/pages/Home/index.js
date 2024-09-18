@@ -6,8 +6,23 @@ import edit from '../../assets/images/icons/edit.svg'
 import trash from '../../assets/images/icons/trash.svg'
 import Modal from "../../components/Modal";
 import Loader from "../../components/Loader";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [contacts, setContact] = useState([])
+  useEffect(() => {
+    fetch("http://localhost:3001/contacts")
+    .then( async (response) => {
+      const json = await response.json();
+      setContact(json);
+      // response.headers.forEach((header) => console.log(header))
+    })
+    .catch((error) => {
+      console.error('error', error)
+      })
+  }, [])
+
+  console.log(contacts);
   return (
     <Container>
 
@@ -16,7 +31,10 @@ export default function Home() {
       </InputSearchContainer>
 
       <Header>
-        <strong>3 Contatos</strong>
+        <strong>
+          {contacts.length}
+          {contacts.length === 1 ? ' contato' : ' contatos'}
+        </strong>
         <Link to="/new">Novo Contato</Link>
       </Header>
 
@@ -28,46 +46,38 @@ export default function Home() {
           </button>
         </header>
 
-        <Card>
-          <div className="info">
-            <div className="contact-name">
-              <strong>Matheus Silva</strong>
-              <small>Instagram</small>
+        {contacts.map((contact)=>(
+          <Card key={contact.id} >
+            <div className="info">
+              <div className="contact-name">
+                <strong>{contact.name}</strong>
+
+                {contact.category_name && (
+                  <small>{contact.category_name}</small>
+                )}
+
+              </div>
+              <span>{contact.email}</span>
+              <span>{contact.phone}</span>
             </div>
-            <span>matheus2devacademy.com.br</span>
-            <span>(41) 99999-9999</span>
-          </div>
 
-          <div className="actions">
-            <Link to="/edit/123">
-              <img src={edit} alt="edit" />
-            </Link>
+            <div className="actions">
+              <Link to={`/edit/${contact.id}`}>
+                <img src={edit} alt="edit" />
+              </Link>
 
-            <button type="button">
-              <img src={trash} alt="trash" />
-            </button>
-          </div>
-        </Card>
+              <button type="button">
+                <img src={trash} alt="trash" />
+              </button>
+            </div>
+          </Card>
+        ))}
 
       </ListContainer>
     </Container>
   );
 }
 
-fetch("http://localhost:3001/contacts", {
-  method: 'DELETE',
-  headers: new Headers({
-    'X-App-ID':'123',
-  }),
-})
-    .then((response) => {
-      console.log('response', response)
-
-      response.headers.forEach((header) => console.log(header))
-    })
-    .catch((error) => {
-      console.error('error', error)
-      })
 
 // SOP  -> Same Origin Policy -> Política de mesma origem
 // CORS -> Cross-Origin Resource Sharing -> Compartilhamento de recursos entre origens cruzadas/diferente

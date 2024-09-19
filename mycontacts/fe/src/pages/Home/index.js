@@ -9,8 +9,9 @@ import Loader from "../../components/Loader";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [contacts, setContact] = useState([])
+  const [ contacts, setContact ] = useState([])
   const [ orderBy, setOrderBy ] = useState('asc')
+  const [ searchTerm, setSearchTerm ] = useState('')
 
   useEffect(() => {
     fetch(`http://localhost:3001/contacts?orderBy=${orderBy}`)
@@ -30,31 +31,42 @@ export default function Home() {
     );
   }
 
-  console.log(orderBy)
+  function handleChangeSearchTerm(event){
+    setSearchTerm(event.target.value);
+  }
+
+  const filteredContacts = contacts.filter((contact) =>
+    contact.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
 
   return (
     <Container>
 
       <InputSearchContainer>
-        <input type="text" placeholder="Pesquise pelo nome..." />
+        <input
+          value={searchTerm}
+          type="text"
+          placeholder="Pesquise pelo nome..."
+          onChange={handleChangeSearchTerm}
+        />
       </InputSearchContainer>
 
       <Header>
         <strong>
-          {contacts.length}
-          {contacts.length === 1 ? ' contato' : ' contatos'}
+          {filteredContacts.length}
+          {filteredContacts.length === 1 ? ' contato' : ' contatos'}
         </strong>
         <Link to="/new">Novo Contato</Link>
       </Header>
 
-      <ListHeader orderBy={orderBy} >
+      <ListHeader $orderBy={orderBy} > {/* A prop orderBy foi prefixada com $ para se tornar uma prop transiente. Isso significa que ela será passada apenas para o componente de estilo (styled-components) e não para o DOM. */}
           <button type="button" onClick={handleToggleOrderBy} >
             <span>nome</span>
             <img src={arrow} alt="Arrow" />
           </button>
       </ListHeader>
 
-      {contacts.map((contact)=>(
+      {filteredContacts.map((contact)=>(
         <Card key={contact.id} >
           <div className="info">
             <div className="contact-name">

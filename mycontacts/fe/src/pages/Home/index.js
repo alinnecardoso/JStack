@@ -6,23 +6,37 @@ import edit from '../../assets/images/icons/edit.svg'
 import trash from '../../assets/images/icons/trash.svg'
 import Modal from "../../components/Modal";
 import Loader from "../../components/Loader";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import delay from "../../utils/delay";
 
 export default function Home() {
   const [ contacts, setContact ] = useState([])
   const [ orderBy, setOrderBy ] = useState('asc')
   const [ searchTerm, setSearchTerm ] = useState('')
+  const [ isLoading, setIsLoading ] = useState(true)
+
+  const filteredContacts = useMemo(()=>contacts.filter((contact) =>
+    contact.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  ), [contacts, searchTerm]);
+
 
   useEffect(() => {
-    fetch(`http://localhost:3001/contacts?orderBy=${orderBy}`)
+    async function loadContacts(){
+      setIsLoading(true);
+    await fetch(`http://localhost:3001/contacts?orderBy=${orderBy}`)
     .then( async (response) => {
+      await delay(500);
       const json = await response.json();
       setContact(json);
-      // response.headers.forEach((header) => console.log(header))
     })
     .catch((error) => {
       console.error('error', error)
       })
+    .finally(() => {
+      setIsLoading(false);
+      });
+    }
+    loadContacts();
   }, [orderBy])
 
   function handleToggleOrderBy(){
@@ -35,13 +49,9 @@ export default function Home() {
     setSearchTerm(event.target.value);
   }
 
-  const filteredContacts = contacts.filter((contact) =>
-    contact.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
-
   return (
     <Container>
-
+      <Loader isLoading={isLoading} />
       <InputSearchContainer>
         <input
           value={searchTerm}

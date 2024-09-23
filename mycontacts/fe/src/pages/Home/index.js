@@ -7,10 +7,10 @@ import trash from '../../assets/images/icons/trash.svg'
 import Modal from "../../components/Modal";
 import Loader from "../../components/Loader";
 import { useEffect, useState, useMemo } from "react";
-import delay from "../../utils/delay";
+import ContactsService from "../../services/ContactsService";
 
 export default function Home() {
-  const [ contacts, setContact ] = useState([])
+  const [ contacts, setContacts ] = useState([])
   const [ orderBy, setOrderBy ] = useState('asc')
   const [ searchTerm, setSearchTerm ] = useState('')
   const [ isLoading, setIsLoading ] = useState(true)
@@ -22,19 +22,19 @@ export default function Home() {
 
   useEffect(() => {
     async function loadContacts(){
-      setIsLoading(true);
-    await fetch(`http://localhost:3001/contacts?orderBy=${orderBy}`)
-    .then( async (response) => {
-      await delay(500);
-      const json = await response.json();
-      setContact(json);
-    })
-    .catch((error) => {
-      console.error('error', error)
-      })
-    .finally(() => {
-      setIsLoading(false);
-      });
+      try {
+        setIsLoading(true);
+
+        const contactsList = await ContactsService.ListContacts(orderBy)
+
+        setContacts(contactsList);
+
+      } catch (error) {
+        console.error('error', error)
+      } finally{
+        setIsLoading(false)
+      }
+
     }
     loadContacts();
   }, [orderBy])

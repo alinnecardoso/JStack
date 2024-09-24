@@ -5,11 +5,24 @@ class HttpClient{
     this.baseURL = baseURL;
   }
   async get(path){
-    const response = await fetch(`${this.baseURL}${path}`)
-
     await delay(500);
 
-    return response.json();
+    console.log('Antes response')
+
+    const response = await fetch(`${this.baseURL}${path}`)
+
+    console.log('Depois response')
+
+    const body = await response.json();
+
+
+    if(response.ok){
+      return body;
+    }
+
+    console.log('Depois body: ' + body.error)
+    throw new Error(body.error);
+
   }
 }
 

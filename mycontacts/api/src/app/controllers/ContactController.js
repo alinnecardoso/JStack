@@ -13,14 +13,16 @@ class ContactController{
     //Obter UM registro
     const { id } = request.params;
 
+    console.log('True or False: ', id)
     const contact = await ContactsRepository.findById(id);
+    console.log(contact)
 
-    if(!contact){
+    if(contact === false){
       // 404: Not Found
-      return response.status(404).json({ error : 'User not found' });
+      return response.status(404).json({ error : 'Contact not found' });
     }
 
-    response.json(contact);
+    return response.json(contact);
   }
 
   async store(request, response){
@@ -41,7 +43,7 @@ class ContactController{
       name, email, phone, category_id,
     })
 
-    response.json(contact)
+    response.status(201).json(contact);
   }
 
   async update(request, response){

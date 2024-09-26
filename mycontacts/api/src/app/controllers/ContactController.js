@@ -13,11 +13,9 @@ class ContactController{
     //Obter UM registro
     const { id } = request.params;
 
-    console.log('True or False: ', id)
     const contact = await ContactsRepository.findById(id);
-    console.log(contact)
 
-    if(contact === false){
+    if(!contact){
       // 404: Not Found
       return response.status(404).json({ error : 'Contact not found' });
     }

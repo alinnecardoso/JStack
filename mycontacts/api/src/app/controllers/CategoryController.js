@@ -8,8 +8,6 @@ class CategoryController {
 
   }
 
-  //teste
-
   //Criar um novo registro
   async store(request, response){
     const { name } = request.body;

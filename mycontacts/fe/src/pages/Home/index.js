@@ -30,7 +30,8 @@ export default function Home() {
         setContacts(contactsList);
 
       } catch (error) {
-        console.error('Caiu no Catch', error)
+        console.log(error.name)
+        console.error(error)
       } finally{
         setIsLoading(false)
       }

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
-import { Container, Header, ListHeader, Card, InputSearchContainer } from "./styles";
+import { Container, Header, ListHeader, Card, InputSearchContainer, ErrorContainer } from "./styles";
 
 import arrow from '../../assets/images/icons/arrow.svg'
 import edit from '../../assets/images/icons/edit.svg'
@@ -8,12 +8,16 @@ import Modal from "../../components/Modal";
 import Loader from "../../components/Loader";
 import { useEffect, useState, useMemo } from "react";
 import ContactsService from "../../services/ContactsService";
+import APIError from "../../errors/APIError";
+import sad from '../../assets/images/sad.svg'
+import Button from "../../components/Button";
 
 export default function Home() {
-  const [ contacts, setContacts ] = useState([])
-  const [ orderBy, setOrderBy ] = useState('asc')
-  const [ searchTerm, setSearchTerm ] = useState('')
-  const [ isLoading, setIsLoading ] = useState(true)
+  const [ contacts, setContacts ] = useState([]);
+  const [ orderBy, setOrderBy ] = useState('asc');
+  const [ searchTerm, setSearchTerm ] = useState('');
+  const [ isLoading, setIsLoading ] = useState(true);
+  const [ hasError, setHasError ] = useState(false);
 
   const filteredContacts = useMemo(()=>contacts.filter((contact) =>
     contact.name.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -29,9 +33,8 @@ export default function Home() {
 
         setContacts(contactsList);
 
-      } catch (error) {
-        console.log(error.name)
-        console.error(error)
+      } catch {
+        setHasError(true)
       } finally{
         setIsLoading(false)
       }
@@ -62,19 +65,35 @@ export default function Home() {
         />
       </InputSearchContainer>
 
-      <Header>
-        <strong>
+      <Header $hasError={hasError}>
+        {!hasError && (
+          <strong>
           {filteredContacts.length}
           {filteredContacts.length === 1 ? ' contato' : ' contatos'}
         </strong>
+        )}
         <Link to="/new">Novo Contato</Link>
       </Header>
 
+      {hasError && (
+        <ErrorContainer>
+          <img src={sad} alt="sad" />
+          <div className="details">
+            <strong>Ocorreu um erro ao obter os seus contatos</strong>
+            <Button type='button' >
+              Tentar novamente
+            </Button>
+          </div>
+        </ErrorContainer>
+      )}
+
       <ListHeader $orderBy={orderBy} > {/* A prop orderBy foi prefixada com $ para se tornar uma prop transiente. Isso significa que ela será passada apenas para o componente de estilo (styled-components) e não para o DOM. */}
-          <button type="button" onClick={handleToggleOrderBy} >
-            <span>nome</span>
-            <img src={arrow} alt="Arrow" />
-          </button>
+          {!hasError && (
+            <button type="button" onClick={handleToggleOrderBy} >
+              <span>nome</span>
+              <img src={arrow} alt="Arrow" />
+            </button>
+          )}
       </ListHeader>
 
       {filteredContacts.map((contact)=>(

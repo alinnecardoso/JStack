@@ -6,7 +6,7 @@ import edit from '../../assets/images/icons/edit.svg'
 import trash from '../../assets/images/icons/trash.svg'
 import Modal from "../../components/Modal";
 import Loader from "../../components/Loader";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import ContactsService from "../../services/ContactsService";
 import APIError from "../../errors/APIError";
 import sad from '../../assets/images/sad.svg'
@@ -24,24 +24,26 @@ export default function Home() {
   ), [contacts, searchTerm]);
 
 
-  useEffect(() => {
-    async function loadContacts(){
-      try {
-        setIsLoading(true);
+  const loadContacts = useCallback(async() => {
+    try {
+      setIsLoading(true);
 
-        const contactsList = await ContactsService.ListContacts(orderBy)
+      const contactsList = await ContactsService.ListContacts(orderBy)
 
-        setContacts(contactsList);
+      setHasError(false);
+      setContacts(contactsList);
 
-      } catch {
-        setHasError(true)
-      } finally{
-        setIsLoading(false)
-      }
-
+    } catch {
+      setHasError(true)
+    } finally{
+      setIsLoading(false)
     }
-    loadContacts();
+
   }, [orderBy])
+
+  useEffect(() => {
+    loadContacts();
+  }, [loadContacts])
 
   function handleToggleOrderBy(){
     setOrderBy(
@@ -51,6 +53,10 @@ export default function Home() {
 
   function handleChangeSearchTerm(event){
     setSearchTerm(event.target.value);
+  }
+
+  function handleTryAgain(){
+    loadContacts();
   }
 
   return (
@@ -80,49 +86,55 @@ export default function Home() {
           <img src={sad} alt="sad" />
           <div className="details">
             <strong>Ocorreu um erro ao obter os seus contatos</strong>
-            <Button type='button' >
+            <Button type='button' onClick={handleTryAgain} >
               Tentar novamente
             </Button>
           </div>
         </ErrorContainer>
       )}
 
-      <ListHeader $orderBy={orderBy} > {/* A prop orderBy foi prefixada com $ para se tornar uma prop transiente. Isso significa que ela será passada apenas para o componente de estilo (styled-components) e não para o DOM. */}
+      {!hasError && (
+        <>
+          {filteredContacts.length > 0 &&(
+          <ListHeader $orderBy={orderBy} > {/* A prop orderBy foi prefixada com $ para se tornar uma prop transiente. Isso significa que ela será passada apenas para o componente de estilo (styled-components) e não para o DOM. */}
           {!hasError && (
             <button type="button" onClick={handleToggleOrderBy} >
               <span>nome</span>
               <img src={arrow} alt="Arrow" />
             </button>
           )}
-      </ListHeader>
+          </ListHeader>
+        )}
 
-      {filteredContacts.map((contact)=>(
-        <Card key={contact.id} >
-          <div className="info">
-            <div className="contact-name">
-              <strong>{contact.name}</strong>
+        {filteredContacts.map((contact)=>(
+          <Card key={contact.id} >
+            <div className="info">
+              <div className="contact-name">
+                <strong>{contact.name}</strong>
 
-              {contact.category_name && (
-                <small>{contact.category_name}</small>
-              )}
+                {contact.category_name && (
+                  <small>{contact.category_name}</small>
+                )}
 
+              </div>
+              <span>{contact.email}</span>
+              <span>{contact.phone}</span>
             </div>
-            <span>{contact.email}</span>
-            <span>{contact.phone}</span>
-          </div>
 
-          <div className="actions">
-            <Link to={`/edit/${contact.id}`}>
-              <img src={edit} alt="edit" />
-            </Link>
+            <div className="actions">
+              <Link to={`/edit/${contact.id}`}>
+                <img src={edit} alt="edit" />
+              </Link>
 
-            <button type="button">
-              <img src={trash} alt="trash" />
-            </button>
-          </div>
-        </Card>
-      ))}
+              <button type="button">
+                <img src={trash} alt="trash" />
+              </button>
+            </div>
+          </Card>
+        ))}
 
+        </>
+      )}
 
     </Container>
   );

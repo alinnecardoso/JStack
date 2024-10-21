@@ -132,6 +132,9 @@ export const ErrorContainer  = styled.div`
 
     strong{
       font-size: 22px;
+      color: ${({theme}) => theme.colors.danger.main};
+      display: block;
+      margin-bottom: 8px;
     }
   }
 `

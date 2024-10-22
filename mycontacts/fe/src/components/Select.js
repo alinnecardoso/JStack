@@ -15,6 +15,12 @@ export default styled.select`
   appearance: none; //Desabilita todos os estilos que o css vai tentar pegar no SO dos dispositivos mobile
 
   &:focus{
-    border-color: ${({theme}) => theme.colors.primary.main} ;
+    border-color: ${({theme}) => theme.colors.primary.main};
+  }
+
+  //Para selecionar um elemento pelo atributo usasse o []
+  &[disabled]{
+    border-color: ${({theme}) => theme.colors.gray[100]};
+    border-color: ${({theme}) => theme.colors.gray[200]};
   }
 `;

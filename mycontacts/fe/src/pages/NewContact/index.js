@@ -15,7 +15,7 @@ export default function NewContact() {
 
       console.log(response)
     } catch (error) {
-      console.log(error)
+      const event = new CustomEvent();
     }
   }
   return (
